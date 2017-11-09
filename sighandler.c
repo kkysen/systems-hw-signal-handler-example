@@ -16,10 +16,21 @@
 #include "sigaction.h"
 #include "stacktrace.h"
 
+#define ERROR_MSG "Program w/ PID = %d terminated due to SIGINT\n", getpid()
+#define ERROR_LOG "exit_status.txt"
+
 void sighandler(int signal, siginfo_t *siginfo, void *context) {
     switch (signal) {
         case SIGINT:
-            printf("Program terminated due to SIGINT\n");
+            printf(ERROR_MSG);
+            FILE *file = fopen(ERROR_LOG, "a+");
+            if (!file) {
+                printf("Couldn't write error message to \"%s\"", ERROR_LOG);
+                perror("fopen");
+                exit(EXIT_FAILURE);
+            }
+            fprintf(file, ERROR_MSG);
+            fclose(file);
             exit(EXIT_FAILURE);
         case SIGUSR1:
             printf("Caught SIGUSR1\nParent PID: %d\n", getppid());
