@@ -56,7 +56,7 @@ int backtrace(void **buffer, int size);
 
 char **backtrace_symbols(void *const *buffer, int size);
 
-#define MAX_STACK_FRAMES 64
+#define MAX_STACK_FRAMES SIGSTKSZ
 
 static void *stack_traces[MAX_STACK_FRAMES];
 
@@ -69,6 +69,10 @@ void posix_print_stack_trace() {
         }
     }
     free(messages);
+}
+
+void print_stack_trace() {
+    posix_print_stack_trace();
 }
 
 #define print_signal(signal, message) fprintf(stderr, "Caught %s: %s\n", signal, message); break

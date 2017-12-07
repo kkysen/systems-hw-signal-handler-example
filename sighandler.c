@@ -62,18 +62,33 @@ void forever_loop(const int argc) {
         if (argc == 0) {
             break;
         }
+        if (rand() % 10 == 0) {
+            print_stack_trace();
+        }
     }
 }
 
-void cause_segfault(const int argc) {
+void cause_segfault() {
     memset((void *) 1, 0, 10000u);
 }
 
+void recurse(int i) {
+    if ((rand() % 100) == 0) {
+        print_stack_trace();
+        forever_loop(1);
+    }
+    if (i > 0) {
+        recurse(i - 1);
+    }
+    cause_segfault();
+}
+
 int main(const int argc, const char *const *const argv) {
+    srand(1);
     set_stack_trace_signal_handler();
-    add_sigaction();
-    if (argc > 1) {
-        cause_segfault(argc);
+    //add_sigaction();
+    if (argc > 0) {
+        recurse(1000);
     }
     forever_loop(argc);
 }

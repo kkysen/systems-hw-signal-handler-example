@@ -7,6 +7,8 @@
 
 #include "sigaction.h"
 
+void print_stack_trace();
+
 void set_stack_trace_signal_handler();
 
 #endif //SYSTEMS_STACKTRACE_H
